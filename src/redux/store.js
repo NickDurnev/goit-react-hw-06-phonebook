@@ -12,6 +12,7 @@ import {
 import storage from 'redux-persist/lib/storage';
 import contactsReducer from './contacts/contacts-reducers';
 import themeReducer from "./theme/theme-reducers";
+import isOpenReducer from "./isOpen/isOpen-reducers";
 
 const contactsPersistConfig = {
   key: 'contacts',
@@ -27,6 +28,7 @@ const themePersistConfig = {
 const rootReducer = combineReducers(({
     contacts: persistReducer(contactsPersistConfig, contactsReducer),
     theme: persistReducer(themePersistConfig, themeReducer),
+    isOpen: isOpenReducer,
 }));
 
 export const store = configureStore({

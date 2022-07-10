@@ -1,6 +1,6 @@
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import getFilteredContacts from 'redux/contacts/contacts.selectors';
+import getFilteredContacts from 'redux/contacts/contacts-selectors';
 import { ThemeProvider } from 'styled-components';
 import { CSSTransition } from 'react-transition-group';
 import contactsActions from '../redux/contacts/contacts-actions';
@@ -12,7 +12,8 @@ import DropList from './DropList';
 import { Container, StyledToastContainer } from './App.styled';
 import { light, dark, blue } from '../themes';
 import Button from './Button';
-import changeTheme from 'redux/theme/theme.actions';
+import changeTheme from 'redux/theme/theme-actions';
+import { setModalOpen, setDropListOpen } from 'redux/isOpen/isOpen-actions';
 
 export function App() {
   let deleteContactID = useRef(null);
@@ -20,13 +21,13 @@ export function App() {
   const modalRef = useRef(null);
   const dropListRef = useRef(null);
   const themes = useRef([light, dark, blue]);
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const contacts = useSelector(state => state.contacts.items);
   const filter = useSelector(state => state.contacts.filter);
   const filteredContacts = useSelector(getFilteredContacts);
   const theme = useSelector(state => state.theme);
+  const isDropListOpen = useSelector(state => state.isOpen.dropList);
+  const isModalOpen = useSelector(state => state.isOpen.modal);
 
   const dispatch = useDispatch();
 
@@ -34,22 +35,22 @@ export function App() {
     if (answear) {
       dispatch(contactsActions.deleteContact(deleteContactID.current));
     }
-    setModalOpen(false);
+    dispatch(setModalOpen(false));
   };
 
   const openModalAgreement = id => {
     deleteContactID.current = id;
-    setModalOpen(true);
+    dispatch(setModalOpen(true));
   };
 
   const handleChangeTheme = ({ theme }) => {
     dispatch(changeTheme(theme));
-    setSidebarOpen(false);
+    dispatch(setDropListOpen(false));
   };
 
   const handleClickClose = e => {
     if (e.target === e.currentTarget) {
-      setSidebarOpen(false);
+      dispatch(setDropListOpen(false));
     }
   };
 
@@ -57,7 +58,7 @@ export function App() {
     <ThemeProvider theme={theme}>
       <Container onClick={handleClickClose}>
         <Button
-          onClick={() => setSidebarOpen(true)}
+          onClick={() => dispatch(setDropListOpen(true))}
           padding={'5px 32px'}
           position={'absolute'}
           positionY={'30px'}
@@ -67,7 +68,7 @@ export function App() {
         </Button>
         <CSSTransition
           nodeRef={dropListRef}
-          in={isSidebarOpen}
+          in={isDropListOpen}
           timeout={animationTimeOut.current}
           classNames="drop"
           unmountOnExit
