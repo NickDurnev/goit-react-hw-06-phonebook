@@ -1,6 +1,5 @@
 import { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import getFilteredContacts from 'redux/contacts/contacts-selectors';
 import { ThemeProvider } from 'styled-components';
 import { CSSTransition } from 'react-transition-group';
 import contactsActions from '../redux/contacts/contacts-actions';
@@ -23,8 +22,6 @@ export function App() {
   const themes = useRef([light, dark, blue]);
 
   const contacts = useSelector(state => state.contacts.items);
-  const filter = useSelector(state => state.contacts.filter);
-  const filteredContacts = useSelector(getFilteredContacts);
   const theme = useSelector(state => state.theme);
   const isDropListOpen = useSelector(state => state.isOpen.dropList);
   const isModalOpen = useSelector(state => state.isOpen.modal);
@@ -90,24 +87,15 @@ export function App() {
           </DropList>
         </CSSTransition>
         <h1>Phonebook</h1>
-        <ContactForm
-          onSubmit={contact => {
-            return dispatch(contactsActions.addContact(contact));
-          }}
-        />
-
+        <ContactForm />
         <h2>Contacts</h2>
-        <Filter
-          onChange={value => dispatch(contactsActions.changeFilter(value))}
-          filter={filter}
-        />
+        <Filter />
         <CSSTransition
           in={contacts.length > 0}
           timeout={animationTimeOut.current}
           unmountOnExit
         >
           <ContactList
-            filterItems={filteredContacts}
             onClick={value => openModalAgreement(value)}
             animationTimeOut={animationTimeOut.current}
           />

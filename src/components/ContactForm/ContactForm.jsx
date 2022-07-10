@@ -1,11 +1,13 @@
-import PropTypes from 'prop-types';
-import { useState, useRef } from 'react';
+import contactsActions from 'redux/contacts/contacts-actions';
+import { useDispatch } from 'react-redux';
+import { useState } from 'react';
 import { Form, Label, Button, Input } from './ContactForm.styled';
 
-const ContactForm = ({ onSubmit }) => {
+const ContactForm = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
-  const InputRef = useRef(Input);
+
+  const dispatch = useDispatch();
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -23,7 +25,7 @@ const ContactForm = ({ onSubmit }) => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    onSubmit({ name, number });
+    dispatch(contactsActions.addContact({ name, number }));
     reset();
   };
 
@@ -37,7 +39,6 @@ const ContactForm = ({ onSubmit }) => {
       <Label>
         Name
         <Input
-          ref={InputRef}
           type="text"
           name="name"
           pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
@@ -50,7 +51,6 @@ const ContactForm = ({ onSubmit }) => {
       <Label>
         Number
         <Input
-          ref={InputRef}
           type="tel"
           name="number"
           mask="(999)-99-99-99-999"
@@ -64,10 +64,6 @@ const ContactForm = ({ onSubmit }) => {
       <Button type="submit">Add contact</Button>
     </Form>
   );
-};
-
-ContactForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
 };
 
 export default ContactForm;
