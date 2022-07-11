@@ -54,7 +54,6 @@ const ContactForm = () => {
           type="tel"
           name="number"
           mask="(999)-99-99-99-999"
-          maskchar="_"
           title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
           required
           value={number}
